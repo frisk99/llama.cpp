@@ -6,33 +6,16 @@ add_library(mtmd
             mtmd.cpp
             mtmd-audio.cpp
             mtmd.h
-            mtmd-helper.cpp
-            mtmd-helper.h
             clip.cpp
             clip.h
             clip-impl.h
-            clip-model.h
-            clip-graph.h
-            models/models.h
-            models/cogvlm.cpp
-            models/conformer.cpp
-            models/glm4v.cpp
-            models/internvl.cpp
-            models/kimivl.cpp
-            models/llama4.cpp
-            models/llava.cpp
-            models/minicpmv.cpp
-            models/pixtral.cpp
-            models/qwen2vl.cpp
-            models/qwen3vl.cpp
-            models/siglip.cpp
-            models/whisper-enc.cpp
+            mtmd-helper.cpp
+            mtmd-helper.h
             )
 
 set_target_properties(mtmd PROPERTIES
     VERSION ${LLAMA_INSTALL_VERSION}
     SOVERSION 0
-    MACHO_CURRENT_VERSION 0 # keep macOS linker from seeing oversized version number
 )
 
 target_link_libraries     (mtmd PUBLIC ggml llama)
@@ -69,15 +52,6 @@ if (TARGET BUILD_INFO)
     add_dependencies(mtmd-helper BUILD_INFO)
 endif()
 
-# if mtmd is linked against common, we throw an error
-if (TARGET mtmd)
-    get_target_property(libs mtmd LINK_LIBRARIES)
-    if (libs AND "common" IN_LIST libs)
-        message(FATAL_ERROR "mtmd is designed to be a public library.\n"
-                            "It must not link against common")
-    endif()
-endif()
-
 add_executable(llama-llava-cli    deprecation-warning.cpp)
 add_executable(llama-gemma3-cli   deprecation-warning.cpp)
 add_executable(llama-minicpmv-cli deprecation-warning.cpp)
@@ -91,3 +65,10 @@ if(LLAMA_TOOLS_INSTALL)
 endif()
 target_link_libraries  (${TARGET} PRIVATE common mtmd Threads::Threads)
 target_compile_features(${TARGET} PRIVATE cxx_std_17)
+
+# Add test for mtmd-class
+set(TARGET_TEST test-mtmd-class)
+add_executable         (${TARGET_TEST} test_mtmd_class.cpp mtmd-class.cpp)
+set_target_properties  (${TARGET_TEST} PROPERTIES OUTPUT_NAME test-mtmd-class)
+target_link_libraries  (${TARGET_TEST} PRIVATE common mtmd Threads::Threads)
+target_compile_features(${TARGET_TEST} PRIVATE cxx_std_17)

@@ -73,8 +73,6 @@ add_library(${TARGET} STATIC
     ngram-cache.h
     peg-parser.cpp
     peg-parser.h
-    preset.cpp
-    preset.h
     regex-partial.cpp
     regex-partial.h
     sampling.cpp
@@ -84,9 +82,6 @@ add_library(${TARGET} STATIC
     unicode.cpp
     unicode.h
     )
-
-target_include_directories(${TARGET} PUBLIC . ../vendor)
-target_compile_features   (${TARGET} PUBLIC cxx_std_17)
 
 if (BUILD_SHARED_LIBS)
     set_target_properties(${TARGET} PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -154,7 +149,9 @@ if (LLAMA_LLGUIDANCE)
     set(LLAMA_COMMON_EXTRA_LIBS ${LLAMA_COMMON_EXTRA_LIBS} llguidance ${LLGUIDANCE_PLATFORM_LIBS})
 endif ()
 
-target_link_libraries(${TARGET} PRIVATE ${LLAMA_COMMON_EXTRA_LIBS} PUBLIC llama Threads::Threads)
+target_include_directories(${TARGET} PUBLIC . ../vendor)
+target_compile_features   (${TARGET} PUBLIC cxx_std_17)
+target_link_libraries     (${TARGET} PRIVATE ${LLAMA_COMMON_EXTRA_LIBS} PUBLIC llama Threads::Threads)
 
 
 #

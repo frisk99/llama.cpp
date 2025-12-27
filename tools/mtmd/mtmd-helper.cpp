@@ -32,10 +32,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
-#ifdef MTMD_INTERNAL_HEADER
-#error "mtmd-helper is a public library outside of mtmd. it must not include internal headers"
-#endif
-
 //
 // internal logging functions
 //
